@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import searchRouter from './routers/search';
 import matchingTracksRouter from './routers/matchingTracks';
 import trackRouter from './routers/track';
@@ -9,17 +9,6 @@ require('dotenv').config();
 const port = process.env.PORT || 8080;
 
 const app = express();
-
-// const allowedOrigins = ['https://double-drop-reminder-fe.vercel.app'];
-// const corsOptions = {
-//   origin: function (origin: string, callback: Function) {
-//     if (allowedOrigins.indexOf(origin) !== -1) {
-//       callback(null, true);
-//     } else {
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   },
-// };
 
 app.use(
   cors({
@@ -33,14 +22,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/search', searchRouter(pool));
 app.use('/matching-tracks', matchingTracksRouter(pool));
 app.use('/track', trackRouter(pool));
-
-// app.get('/', (_req: Request, res: Response) => {
-//   return res.send('Express Typescript on Vercel');
-// });
-
-// app.get('/ping', (_req: Request, res: Response) => {
-//   return res.send('pong 🏓');
-// });
 
 app.listen(port, () => {
   return console.log(`Server is listening on ${port}`);

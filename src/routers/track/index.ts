@@ -30,7 +30,6 @@ export default (db: Pool) => {
     }
   });
 
-  // TODO: implement deleting track in UI
   router.delete('/:trackId', async (req: Request, res: Response) => {
     const { trackId } = req.params;
     const query = `

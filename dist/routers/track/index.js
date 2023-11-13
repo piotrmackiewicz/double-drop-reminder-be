@@ -41,7 +41,6 @@ exports.default = (db) => {
             throw error;
         }
     }));
-    // TODO: implement deleting track in UI
     router.delete('/:trackId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { trackId } = req.params;
         const query = `

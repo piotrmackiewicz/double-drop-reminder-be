@@ -1,39 +1,39 @@
 {
-	"name": "express-typescript-vercel-part2",
-	"version": "1.0.0",
-	"description": "",
-	"main": "index.js",
-	"scripts": {
-		"start": "nodemon src/index.ts",
-		"build": "rimraf dist && tsc",
-		"ts.check": "tsc --project tsconfig.json",
-		"add-build": "git add dist",
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
-	"pre-commit": [
-		"ts.check",
-		"build",
-		"add-build"
-	],
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"devDependencies": {
-		"@types/cors": "^2.8.16",
-		"@types/dotenv": "^8.2.0",
-		"@types/express": "^4.17.14",
-		"@types/node": "^20.9.0",
-		"@types/pg": "^8.10.9",
-		"nodemon": "^2.0.20",
-		"pre-commit": "^1.2.2",
-		"rimraf": "^5.0.5",
-		"ts-node": "^10.9.1",
-		"typescript": "^4.8.4"
-	},
-	"dependencies": {
-		"cors": "^2.8.5",
-		"dotenv": "^16.3.1",
-		"express": "^4.18.2",
-		"pg": "^8.11.3"
-	}
+  "name": "double-drop-reminder-be",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/index.ts",
+    "build": "rimraf dist && tsc",
+    "ts.check": "tsc --project tsconfig.json",
+    "add-build": "git add dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "pre-commit": [
+    "ts.check",
+    "build",
+    "add-build"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/cors": "^2.8.16",
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.14",
+    "@types/node": "^20.9.0",
+    "@types/pg": "^8.10.9",
+    "nodemon": "^2.0.20",
+    "pre-commit": "^1.2.2",
+    "rimraf": "^5.0.5",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.4"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "pg": "^8.11.3"
+  }
 }
