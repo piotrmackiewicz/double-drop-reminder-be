@@ -1,25 +1,72 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const app_1 = require("firebase/app");
+const authRouter_1 = __importDefault(require("./routers/authRouter"));
 const search_1 = __importDefault(require("./routers/search"));
 const matchingTracks_1 = __importDefault(require("./routers/matchingTracks"));
 const track_1 = __importDefault(require("./routers/track"));
 const db_1 = __importDefault(require("./db"));
 const cors_1 = __importDefault(require("cors"));
+const firebase_admin_1 = __importDefault(require("firebase-admin"));
 require('dotenv').config();
 const port = process.env.PORT || 8080;
+const firebaseConfig = {
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.FIREBASE_APP_ID,
+};
+firebase_admin_1.default.initializeApp(firebaseConfig);
+const firebaseApp = (0, app_1.initializeApp)(firebaseConfig);
 const app = (0, express_1.default)();
-app.use((0, cors_1.default)({
-    origin: 'https://double-drop-reminder-fe.vercel.app',
-}));
+if (app.get('env') === 'development') {
+    app.use((0, cors_1.default)());
+}
+else {
+    app.use((0, cors_1.default)({
+        origin: 'https://double-drop-reminder-fe.vercel.app',
+    }));
+}
+const checkUser = (idToken) => __awaiter(void 0, void 0, void 0, function* () {
+    const decodedToken = yield firebase_admin_1.default.auth().verifyIdToken(idToken);
+    return decodedToken.uid;
+});
+const authMiddleware = (req, res, next) => {
+    try {
+        const idToken = req.headers.authorization;
+        if (!idToken) {
+            throw new Error();
+        }
+        const uid = checkUser(idToken);
+        // For now uid is not used, but will we used to implement rating
+        res.locals.uid = uid;
+        next();
+    }
+    catch (err) {
+        res.sendStatus(401);
+    }
+};
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
-app.use('/search', (0, search_1.default)(db_1.default));
-app.use('/matching-tracks', (0, matchingTracks_1.default)(db_1.default));
-app.use('/track', (0, track_1.default)(db_1.default));
+app.use('/auth', [(0, authRouter_1.default)(firebaseApp)]);
+app.use('/search', [authMiddleware, (0, search_1.default)(db_1.default)]);
+app.use('/matching-tracks', [authMiddleware, (0, matchingTracks_1.default)(db_1.default)]);
+app.use('/track', [authMiddleware, (0, track_1.default)(db_1.default)]);
 app.listen(port, () => {
     return console.log(`Server is listening on ${port}`);
 });
