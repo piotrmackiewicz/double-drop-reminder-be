@@ -10,18 +10,22 @@ const port = process.env.PORT || 8080;
 
 const app = express();
 
-const allowedOrigins = ['https://double-drop-reminder-fe.vercel.app'];
-const corsOptions = {
-  origin: function (origin: string, callback: Function) {
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-};
+// const allowedOrigins = ['https://double-drop-reminder-fe.vercel.app'];
+// const corsOptions = {
+//   origin: function (origin: string, callback: Function) {
+//     if (allowedOrigins.indexOf(origin) !== -1) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   },
+// };
 
-app.use(cors(corsOptions));
+app.use(
+  cors({
+    origin: 'https://double-drop-reminder-fe.vercel.app',
+  })
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
