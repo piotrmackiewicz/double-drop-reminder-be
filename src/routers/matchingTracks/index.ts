@@ -43,7 +43,7 @@ export default (db: Pool) => {
     try {
       const query = `
         SELECT id, artist, title, matching_tracks
-        FROM doubledrop_tracks WHERE id = ANY((SELECT matching_tracks FROM tracks WHERE id = $1)::integer[]) 
+        FROM doubledrop_tracks WHERE id = ANY((SELECT matching_tracks FROM doubledrop_tracks WHERE id = $1)::integer[]) 
       `;
       const matchingTracks = await db.query(query, [trackId]);
       res.status(200).json(matchingTracks.rows);
