@@ -3,14 +3,25 @@ import searchRouter from './routers/search';
 import matchingTracksRouter from './routers/matchingTracks';
 import trackRouter from './routers/track';
 import pool from './db';
-// import cors from 'cors'
+import cors from 'cors';
 require('dotenv').config();
 
 const port = process.env.PORT || 8080;
 
 const app = express();
 
-// app.use(cors());
+const allowedOrigins = ['https://double-drop-reminder-fe.vercel.app'];
+const corsOptions = {
+  origin: function (origin: string, callback: Function) {
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

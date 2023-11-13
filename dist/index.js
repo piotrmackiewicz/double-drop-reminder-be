@@ -8,11 +8,22 @@ const search_1 = __importDefault(require("./routers/search"));
 const matchingTracks_1 = __importDefault(require("./routers/matchingTracks"));
 const track_1 = __importDefault(require("./routers/track"));
 const db_1 = __importDefault(require("./db"));
-// import cors from 'cors'
+const cors_1 = __importDefault(require("cors"));
 require('dotenv').config();
 const port = process.env.PORT || 8080;
 const app = (0, express_1.default)();
-// app.use(cors());
+const allowedOrigins = ['https://double-drop-reminder-fe.vercel.app'];
+const corsOptions = {
+    origin: function (origin, callback) {
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        }
+        else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+};
+app.use((0, cors_1.default)(corsOptions));
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use('/search', (0, search_1.default)(db_1.default));
