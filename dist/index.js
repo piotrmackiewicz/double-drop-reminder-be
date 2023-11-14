@@ -39,7 +39,7 @@ if (app.get('env') === 'development') {
 }
 else {
     app.use((0, cors_1.default)({
-        origin: 'https://double-drop-reminder-fe.vercel.app',
+        origin: 'https://ddreminder.vercel.app',
     }));
 }
 const checkUser = (idToken) => __awaiter(void 0, void 0, void 0, function* () {
