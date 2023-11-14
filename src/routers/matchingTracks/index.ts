@@ -7,15 +7,11 @@ export default (db: Pool) => {
   router.post('/', async (req: Request, res: Response) => {
     const { originTrackId, matchingTrackId } = req.body;
     const query = `
-        UPDATE doubledrop_tracks
-        SET matching_tracks = matching_tracks || array[$2]::integer[][]
-        WHERE
-            id = $1
-            AND not(matching_tracks @> array[$2]::integer[][])
+      INSERT INTO doubledrop_matches (track_1, track_2)
+      VALUES ($1, $2)
     `;
     try {
       await db.query(query, [originTrackId, matchingTrackId]);
-      await db.query(query, [matchingTrackId, originTrackId]);
       res.status(204).send();
     } catch (error) {
       throw error;
@@ -26,8 +22,10 @@ export default (db: Pool) => {
     const { trackId } = req.params;
     try {
       const query = `
-        SELECT id, artist, title, matching_tracks, thumbs_up, thumbs_down 
-        FROM doubledrop_tracks WHERE id = ANY((SELECT matching_tracks FROM doubledrop_tracks WHERE id = $1)::integer[]) 
+        SELECT id, artist, title 
+        FROM doubledrop_tracks
+        WHERE id = ANY((SELECT track_1 FROM doubledrop_matches WHERE track_2 = $1))
+        OR id = ANY((SELECT track_2 FROM doubledrop_matches WHERE track_1 = $1))
       `;
       const matchingTracks = await db.query(query, [trackId]);
       res.status(200).json(matchingTracks.rows);
