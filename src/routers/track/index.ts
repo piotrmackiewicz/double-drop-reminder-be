@@ -20,7 +20,7 @@ export default (db: Pool) => {
   router.get('/:trackId', async (req: Request, res: Response) => {
     const { trackId } = req.params;
     const query = `
-      SELECT id, artist, title, matching_tracks FROM doubledrop_tracks WHERE id = $1
+      SELECT id, artist, title, matching_tracks, thumbs_up, thumbs_down FROM doubledrop_tracks WHERE id = $1
     `;
     try {
       const result = await db.query(query, [trackId]);

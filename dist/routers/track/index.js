@@ -31,7 +31,7 @@ exports.default = (db) => {
     router.get('/:trackId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { trackId } = req.params;
         const query = `
-      SELECT id, artist, title, matching_tracks FROM doubledrop_tracks WHERE id = $1
+      SELECT id, artist, title, matching_tracks, thumbs_up, thumbs_down FROM doubledrop_tracks WHERE id = $1
     `;
         try {
             const result = yield db.query(query, [trackId]);

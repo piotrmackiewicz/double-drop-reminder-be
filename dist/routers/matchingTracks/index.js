@@ -37,7 +37,7 @@ exports.default = (db) => {
         const { trackId } = req.params;
         try {
             const query = `
-        SELECT id, artist, title, matching_tracks
+        SELECT id, artist, title, matching_tracks, thumbs_up, thumbs_down 
         FROM doubledrop_tracks WHERE id = ANY((SELECT matching_tracks FROM doubledrop_tracks WHERE id = $1)::integer[]) 
       `;
             const matchingTracks = yield db.query(query, [trackId]);

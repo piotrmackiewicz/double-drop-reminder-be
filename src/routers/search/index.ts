@@ -15,7 +15,7 @@ export default (db: Pool) => {
       queryFields = 'title';
     }
     let query = ` 
-            SELECT id, title, artist, matching_tracks
+            SELECT id, title, artist, matching_tracks, thumbs_up, thumbs_down
             FROM doubledrop_tracks
             WHERE to_tsvector('simple', ${queryFields}) @@ to_tsquery('simple', $1);`;
 
