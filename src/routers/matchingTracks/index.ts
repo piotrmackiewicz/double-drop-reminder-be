@@ -22,22 +22,6 @@ export default (db: Pool) => {
     }
   });
 
-  router.delete('/', async (req: Request, res: Response) => {
-    const { originTrackId, matchingTrackId } = req.body;
-    const query = `
-        UPDATE doubledrop_tracks
-        SET matching_tracks = array_remove(matching_tracks, $2)
-        WHERE id = $1
-    `;
-    try {
-      await db.query(query, [originTrackId, matchingTrackId]);
-      await db.query(query, [matchingTrackId, originTrackId]);
-      res.status(200).send();
-    } catch (error) {
-      throw error;
-    }
-  });
-
   router.get('/:trackId', async (req: Request, res: Response) => {
     const { trackId } = req.params;
     try {

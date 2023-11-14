@@ -33,22 +33,6 @@ exports.default = (db) => {
             throw error;
         }
     }));
-    router.delete('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const { originTrackId, matchingTrackId } = req.body;
-        const query = `
-        UPDATE doubledrop_tracks
-        SET matching_tracks = array_remove(matching_tracks, $2)
-        WHERE id = $1
-    `;
-        try {
-            yield db.query(query, [originTrackId, matchingTrackId]);
-            yield db.query(query, [matchingTrackId, originTrackId]);
-            res.status(200).send();
-        }
-        catch (error) {
-            throw error;
-        }
-    }));
     router.get('/:trackId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { trackId } = req.params;
         try {
