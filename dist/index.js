@@ -18,7 +18,7 @@ const authRouter_1 = __importDefault(require("./routers/authRouter"));
 const search_1 = __importDefault(require("./routers/search"));
 const matchingTracks_1 = __importDefault(require("./routers/matchingTracks"));
 const track_1 = __importDefault(require("./routers/track"));
-const db_1 = __importDefault(require("./db"));
+const userRating_1 = __importDefault(require("./routers/userRating"));
 const cors_1 = __importDefault(require("cors"));
 const firebase_admin_1 = __importDefault(require("firebase-admin"));
 require('dotenv').config();
@@ -50,23 +50,23 @@ const authMiddleware = (req, res, next) => {
     try {
         const idToken = req.headers.authorization;
         if (!idToken) {
-            throw new Error();
+            res.status(401).send();
         }
         const uid = checkUser(idToken);
-        // For now uid is not used, but will we used to implement rating
-        res.locals.uid = uid;
+        req.app.locals.uid = uid;
         next();
     }
     catch (err) {
-        res.sendStatus(401);
+        res.status(401).json(err);
     }
 };
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use('/auth', [(0, authRouter_1.default)(firebaseApp)]);
-app.use('/search', [authMiddleware, (0, search_1.default)(db_1.default)]);
-app.use('/matching-tracks', [authMiddleware, (0, matchingTracks_1.default)(db_1.default)]);
-app.use('/track', [authMiddleware, (0, track_1.default)(db_1.default)]);
+app.use('/search', [authMiddleware, search_1.default]);
+app.use('/user-rating', [authMiddleware, userRating_1.default]);
+app.use('/matching-tracks', [authMiddleware, matchingTracks_1.default]);
+app.use('/track', [authMiddleware, track_1.default]);
 app.listen(port, () => {
     return console.log(`Server is listening on ${port}`);
 });

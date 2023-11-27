@@ -4,7 +4,7 @@ import authRouter from './routers/authRouter';
 import searchRouter from './routers/search';
 import matchingTracksRouter from './routers/matchingTracks';
 import trackRouter from './routers/track';
-import pool from './db';
+import userRatingRouter from './routers/userRating';
 import cors from 'cors';
 import admin from 'firebase-admin';
 require('dotenv').config();
@@ -44,14 +44,14 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   try {
     const idToken = req.headers.authorization;
     if (!idToken) {
-      throw new Error();
+      res.status(401).send();
     }
     const uid = checkUser(idToken);
-    // For now uid is not used, but will we used to implement rating
-    res.locals.uid = uid;
+
+    req.app.locals.uid = uid;
     next();
   } catch (err) {
-    res.sendStatus(401);
+    res.status(401).json(err);
   }
 };
 
@@ -59,9 +59,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/auth', [authRouter(firebaseApp)]);
-app.use('/search', [authMiddleware, searchRouter(pool)]);
-app.use('/matching-tracks', [authMiddleware, matchingTracksRouter(pool)]);
-app.use('/track', [authMiddleware, trackRouter(pool)]);
+app.use('/search', [authMiddleware, searchRouter]);
+app.use('/user-rating', [authMiddleware, userRatingRouter]);
+app.use('/matching-tracks', [authMiddleware, matchingTracksRouter]);
+app.use('/track', [authMiddleware, trackRouter]);
 
 app.listen(port, () => {
   return console.log(`Server is listening on ${port}`);

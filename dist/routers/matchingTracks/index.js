@@ -13,38 +13,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-exports.default = (db) => {
-    const router = express_1.default.Router();
-    router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const { originTrackId, matchingTrackId } = req.body;
-        const query = `
+const db_1 = __importDefault(require("../../db"));
+const router = express_1.default.Router();
+router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { originTrackId, matchingTrackId } = req.body;
+    const query = `
       INSERT INTO doubledrop_matches (track_1, track_2)
       VALUES ($1, $2)
     `;
-        try {
-            yield db.query(query, [originTrackId, matchingTrackId]);
-            res.status(204).send();
-        }
-        catch (error) {
-            throw error;
-        }
-    }));
-    router.get('/:trackId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const { trackId } = req.params;
-        try {
-            const query = `
-        SELECT id, artist, title 
-        FROM doubledrop_tracks
-        WHERE id = ANY((SELECT track_1 FROM doubledrop_matches WHERE track_2 = $1))
-        OR id = ANY((SELECT track_2 FROM doubledrop_matches WHERE track_1 = $1))
+    try {
+        yield db_1.default.query(query, [originTrackId, matchingTrackId]);
+        res.status(204).send();
+    }
+    catch (error) {
+        throw error;
+    }
+}));
+router.get('/:trackId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { trackId } = req.params;
+    try {
+        const query = `
+        SELECT tracks.id, tracks.artist, tracks.title, matches.id as match_id, matches.thumbs_up, matches.thumbs_down
+        FROM doubledrop_matches as matches
+        LEFT JOIN doubledrop_tracks as tracks ON (tracks.id = matches.track_1 OR tracks.id = matches.track_2) AND tracks.id != $1
+        WHERE matches.track_1 = $1 OR matches.track_2 = $1
       `;
-            const matchingTracks = yield db.query(query, [trackId]);
-            res.status(200).json(matchingTracks.rows);
-        }
-        catch (error) {
-            throw error;
-        }
-    }));
-    return router;
-};
+        const matchingTracks = yield db_1.default.query(query, [trackId]);
+        res.status(200).json(matchingTracks.rows);
+    }
+    catch (error) {
+        throw error;
+    }
+}));
+exports.default = router;
 //# sourceMappingURL=index.js.map

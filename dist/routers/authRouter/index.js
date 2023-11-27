@@ -27,18 +27,6 @@ exports.default = (app) => {
             throw err;
         }
     }));
-    router.post('/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        const { email, password } = req.body;
-        try {
-            const creds = yield (0, auth_1.signInWithEmailAndPassword)(auth, email, password);
-            const { user } = creds;
-            const idToken = yield user.getIdToken();
-            res.status(200).json({ idToken });
-        }
-        catch (err) {
-            throw err;
-        }
-    }));
     return router;
 };
 //# sourceMappingURL=index.js.map
