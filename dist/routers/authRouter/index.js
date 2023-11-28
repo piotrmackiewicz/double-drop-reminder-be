@@ -14,13 +14,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const auth_1 = require("firebase/auth");
+const db_1 = __importDefault(require("../../db"));
 exports.default = (app) => {
     const router = express_1.default.Router();
     const auth = (0, auth_1.getAuth)(app);
     router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { email, password } = req.body;
         try {
-            yield (0, auth_1.createUserWithEmailAndPassword)(auth, email, password);
+            const result = yield (0, auth_1.createUserWithEmailAndPassword)(auth, email, password);
+            const { uid } = result.user;
+            const query = `
+        INSERT INTO doubledrop_users_ratings (uid) VALUES ($1)
+      `;
+            yield db_1.default.query(query, [uid]);
             res.status(201).send();
         }
         catch (err) {
