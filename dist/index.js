@@ -17,7 +17,6 @@ const app_1 = require("firebase/app");
 const authRouter_1 = __importDefault(require("./routers/authRouter"));
 const search_1 = __importDefault(require("./routers/search"));
 const matches_1 = __importDefault(require("./routers/matches"));
-const track_1 = __importDefault(require("./routers/track"));
 const userRating_1 = __importDefault(require("./routers/userRating"));
 const cors_1 = __importDefault(require("cors"));
 const firebase_admin_1 = __importDefault(require("firebase-admin"));
@@ -66,7 +65,6 @@ app.use('/auth', [(0, authRouter_1.default)(firebaseApp)]);
 app.use('/search', [authMiddleware, search_1.default]);
 app.use('/user-rating', [authMiddleware, userRating_1.default]);
 app.use('/matches', [authMiddleware, matches_1.default]);
-app.use('/track', [authMiddleware, track_1.default]);
 app.listen(port, () => {
     return console.log(`Server is listening on ${port}`);
 });

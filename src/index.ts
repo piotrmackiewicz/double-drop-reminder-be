@@ -3,7 +3,6 @@ import { initializeApp } from 'firebase/app';
 import authRouter from './routers/authRouter';
 import searchRouter from './routers/search';
 import matchesRouter from './routers/matches';
-import trackRouter from './routers/track';
 import userRatingRouter from './routers/userRating';
 import cors from 'cors';
 import admin from 'firebase-admin';
@@ -62,7 +61,6 @@ app.use('/auth', [authRouter(firebaseApp)]);
 app.use('/search', [authMiddleware, searchRouter]);
 app.use('/user-rating', [authMiddleware, userRatingRouter]);
 app.use('/matches', [authMiddleware, matchesRouter]);
-app.use('/track', [authMiddleware, trackRouter]);
 
 app.listen(port, () => {
   return console.log(`Server is listening on ${port}`);
