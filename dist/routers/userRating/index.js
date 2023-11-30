@@ -14,17 +14,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const db_1 = __importDefault(require("../../db"));
+const uuid_1 = require("uuid");
 const router = express_1.default.Router();
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const uid = yield req.app.locals.uid;
     const query = `
-    SELECT thumb_up_matches_ids, thumb_down_matches_ids
-    FROM doubledrop_users_ratings
-    WHERE uid = $1;
+    SELECT id, match_id FROM doubledrop_users_ratings
+    WHERE uid = $1
   `;
     try {
         const result = yield db_1.default.query(query, [uid]);
-        res.status(200).json(result.rows[0]);
+        res.status(200).json(result.rows);
     }
     catch (error) {
         throw error;
@@ -35,20 +35,17 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { matchId, rate } = req.body;
     const client = yield db_1.default.connect();
     const userRatingsQuery = `
-    UPDATE doubledrop_users_ratings
-    SET ${rate === 0
-        ? 'thumb_down_matches_ids = ARRAY_APPEND(thumb_down_matches_ids, $1)'
-        : 'thumb_up_matches_ids = ARRAY_APPEND(thumb_up_matches_ids, $1)'}
-    WHERE uid = $2;
+    INSERT INTO doubledrop_users_ratings (id, uid, match_id, rating)
+    VALUES ($1, $2, $3, $4)
   `;
     const matchesQuery = `
     UPDATE doubledrop_matches
-    SET ${rate === 0 ? 'thumbs_down = thumbs_down + 1' : 'thumbs_up = thumbs_up + 1'}
+    SET ${rate ? 'thumbs_up = thumbs_up + 1' : 'thumbs_down = thumbs_down + 1'}
     WHERE id = $1;
   `;
     try {
         yield client.query('BEGIN');
-        yield client.query(userRatingsQuery, [matchId, uid]);
+        yield client.query(userRatingsQuery, [(0, uuid_1.v4)(), uid, matchId, rate]);
         yield client.query(matchesQuery, [matchId]);
         yield client.query('COMMIT');
         res.status(201).send();

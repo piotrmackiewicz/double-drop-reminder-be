@@ -2,7 +2,7 @@ import express, { NextFunction, Request, Response } from 'express';
 import { initializeApp } from 'firebase/app';
 import authRouter from './routers/authRouter';
 import searchRouter from './routers/search';
-import matchingTracksRouter from './routers/matchingTracks';
+import matchesRouter from './routers/matches';
 import trackRouter from './routers/track';
 import userRatingRouter from './routers/userRating';
 import cors from 'cors';
@@ -61,7 +61,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/auth', [authRouter(firebaseApp)]);
 app.use('/search', [authMiddleware, searchRouter]);
 app.use('/user-rating', [authMiddleware, userRatingRouter]);
-app.use('/matching-tracks', [authMiddleware, matchingTracksRouter]);
+app.use('/matches', [authMiddleware, matchesRouter]);
 app.use('/track', [authMiddleware, trackRouter]);
 
 app.listen(port, () => {

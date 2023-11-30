@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const db_1 = __importDefault(require("../../db"));
+const axios_1 = __importDefault(require("axios"));
 const router = express_1.default.Router();
 router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { field } = req.query;
@@ -36,6 +37,18 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     catch (error) {
         throw error;
     }
+}));
+router.get('/get-spotify-token', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield axios_1.default.post('https://accounts.spotify.com/api/token', {
+        grant_type: 'client_credentials',
+        client_id: process.env.SPOTIFY_CLIENT_ID,
+        client_secret: process.env.SPOTIFY_CLIENT_SECRET,
+    }, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+    });
+    res.status(200).json({ accessToken: result.data.access_token });
 }));
 exports.default = router;
 //# sourceMappingURL=index.js.map
