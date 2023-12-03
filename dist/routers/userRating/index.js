@@ -19,7 +19,7 @@ const router = express_1.default.Router();
 router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const uid = yield req.app.locals.uid;
     const query = `
-    SELECT id, match_id FROM doubledrop_users_ratings
+    SELECT id, match_id, rating FROM doubledrop_users_ratings
     WHERE uid = $1
   `;
     try {

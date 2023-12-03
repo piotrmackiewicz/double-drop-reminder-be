@@ -30,6 +30,24 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         throw error;
     }
 }));
+router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const ids = req.query.ids;
+    if (!ids) {
+        res.status(404).send();
+    }
+    const query = `
+    SELECT id, track_1, track_2, thumbs_up, thumbs_down
+    FROM doubledrop_matches
+    WHERE id = ANY($1::varchar[])
+  `;
+    try {
+        const result = yield db_1.default.query(query, [ids]);
+        res.status(200).json(result.rows);
+    }
+    catch (error) {
+        throw error;
+    }
+}));
 router.get('/:trackId', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { trackId } = req.params;
     try {

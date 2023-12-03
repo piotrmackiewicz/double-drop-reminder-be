@@ -18,6 +18,26 @@ router.post('/', async (req: Request, res: Response) => {
   }
 });
 
+router.get('/', async (req: Request, res: Response) => {
+  const ids = req.query.ids;
+  if (!ids) {
+    res.status(404).send();
+  }
+
+  const query = `
+    SELECT id, track_1, track_2, thumbs_up, thumbs_down
+    FROM doubledrop_matches
+    WHERE id = ANY($1::varchar[])
+  `;
+
+  try {
+    const result = await db.query(query, [ids]);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    throw error;
+  }
+});
+
 router.get('/:trackId', async (req: Request, res: Response) => {
   const { trackId } = req.params;
   try {

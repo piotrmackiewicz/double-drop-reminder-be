@@ -1,7 +1,6 @@
 import express, { Request, Response } from 'express';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { FirebaseApp } from 'firebase/app';
-import db from '../../db';
 
 export default (app: FirebaseApp) => {
   const router = express.Router();
@@ -15,12 +14,6 @@ export default (app: FirebaseApp) => {
         email,
         password
       );
-      const { uid } = result.user;
-
-      const query = `
-        INSERT INTO doubledrop_users_ratings (uid) VALUES ($1)
-      `;
-      await db.query(query, [uid]);
 
       res.status(201).send();
     } catch (err) {

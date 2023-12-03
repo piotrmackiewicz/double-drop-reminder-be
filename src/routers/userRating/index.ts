@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/', async (req: Request, res: Response) => {
   const uid = await req.app.locals.uid;
   const query = `
-    SELECT id, match_id FROM doubledrop_users_ratings
+    SELECT id, match_id, rating FROM doubledrop_users_ratings
     WHERE uid = $1
   `;
   try {
