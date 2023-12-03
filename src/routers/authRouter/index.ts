@@ -1,5 +1,9 @@
 import express, { Request, Response } from 'express';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from 'firebase/auth';
 import { FirebaseApp } from 'firebase/app';
 
 export default (app: FirebaseApp) => {
@@ -14,6 +18,8 @@ export default (app: FirebaseApp) => {
         email,
         password
       );
+      const user = result.user;
+      await sendEmailVerification(result.user);
 
       res.status(201).send();
     } catch (err) {

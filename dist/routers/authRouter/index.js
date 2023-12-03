@@ -21,6 +21,8 @@ exports.default = (app) => {
         const { email, password } = req.body;
         try {
             const result = yield (0, auth_1.createUserWithEmailAndPassword)(auth, email, password);
+            const user = result.user;
+            yield (0, auth_1.sendEmailVerification)(result.user);
             res.status(201).send();
         }
         catch (err) {
