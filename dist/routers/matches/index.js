@@ -16,6 +16,22 @@ const express_1 = __importDefault(require("express"));
 const db_1 = __importDefault(require("../../db"));
 const uuid_1 = require("uuid");
 const router = express_1.default.Router();
+router.get('/top', (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const amount = 20;
+    try {
+        const query = `
+      SELECT id, track_1, track_2, thumbs_up, thumbs_down, ROUND((thumbs_up/(thumbs_up+thumbs_down))*100, 0) as percentage
+      FROM doubledrop_matches
+      ORDER BY percentage DESC
+      LIMIT $1;
+    `;
+        const topMatches = yield db_1.default.query(query, [amount]);
+        res.status(200).json(topMatches.rows);
+    }
+    catch (error) {
+        throw error;
+    }
+}));
 router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { originTrackId, matchingTrackId } = req.body;
     const query = `

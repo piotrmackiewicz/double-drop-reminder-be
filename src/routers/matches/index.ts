@@ -4,6 +4,22 @@ import { v4 as uuidv4 } from 'uuid';
 
 const router = express.Router();
 
+router.get('/top', async (_req: Request, res: Response) => {
+  const amount = 20;
+  try {
+    const query = `
+      SELECT id, track_1, track_2, thumbs_up, thumbs_down, ROUND((thumbs_up/(thumbs_up+thumbs_down))*100, 0) as percentage
+      FROM doubledrop_matches
+      ORDER BY percentage DESC
+      LIMIT $1;
+    `;
+    const topMatches = await db.query(query, [amount]);
+    res.status(200).json(topMatches.rows);
+  } catch (error) {
+    throw error;
+  }
+});
+
 router.post('/', async (req: Request, res: Response) => {
   const { originTrackId, matchingTrackId } = req.body;
   const query = `
