@@ -4,6 +4,7 @@ import authRouter from './routers/authRouter';
 import searchRouter from './routers/search';
 import matchesRouter from './routers/matches';
 import userRatingRouter from './routers/userRating';
+import supportRouter from './routers/support';
 import cors from 'cors';
 import admin from 'firebase-admin';
 require('dotenv').config();
@@ -61,6 +62,7 @@ app.use('/auth', [authRouter(firebaseApp)]);
 app.use('/search', [authMiddleware, searchRouter]);
 app.use('/user-rating', [authMiddleware, userRatingRouter]);
 app.use('/matches', [authMiddleware, matchesRouter]);
+app.use('/support', [authMiddleware, supportRouter]);
 
 app.listen(port, () => {
   return console.log(`Server is listening on ${port}`);
