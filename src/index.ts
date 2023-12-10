@@ -30,7 +30,7 @@ if (app.get('env') === 'development') {
 } else {
   app.use(
     cors({
-      origin: 'https://ddreminder.vercel.app',
+      origin: 'https://double-drop-helper.com',
     })
   );
 }
